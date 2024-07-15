@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuevo Post</title>
+    <title>New Post</title>
 </head>
 <body>
-    <h1>Nuevo Post</h1>
+    <h1>Create a New Post</h1>
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <p>
@@ -15,7 +15,11 @@
         </p>
         <p>
             {{ form.content.label }}<br>
-            {{ form.content(cols=32, rows=4) }}
+            {{ form.content(cols=50, rows=10) }}
+        </p>
+        <p>
+            {{ form.keywords.label }}<br>
+            {{ form.keywords(size=32) }}
         </p>
         <p>{{ form.submit() }}</p>
     </form>

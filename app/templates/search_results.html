@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container" style="margin-top: 80px;">
+        <h1>Search Results</h1>
+        <ul class="list-group">
+            {% for post in posts %}
+            <li class="list-group-item">
+                <strong>{{ post.title }}</strong><br>
+                by {{ post.author.nickname }}<br>
+                {{ post.date_posted.strftime('%Y-%m-%d') }}<br>
+                Keywords: {{ post.keywords }}
+            </li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('main.home') }}">Back to Home</a>
+    </div>
+</body>
+</html>

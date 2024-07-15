@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Area</title>
+</head>
+<body>
+    <h1>Welcome, {{ current_user.nickname }}!</h1>
+    <a href="{{ url_for('main.new_post') }}">Create a New Post</a>
+    <h2>Your Posts</h2>
+    <ul>
+        {% for post in posts %}
+        <li>
+            <strong>{{ post.title }}</strong><br>
+            {{ post.date_posted.strftime('%Y-%m-%d %H:%M:%S') }}<br>
+            Keywords: {{ post.keywords }}<br>
+            <a href="{{ url_for('main.edit_post', post_id=post.id) }}">Edit</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <br>
+    <a href="{{ url_for('main.home') }}">Home</a>
+    <form action="{{ url_for('main.logout') }}" method="POST" style="display:inline;">
+        <button type="submit">Logout</button>
+    </form>
+</body>
+</html>
