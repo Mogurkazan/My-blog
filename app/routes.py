@@ -6,7 +6,7 @@ from flask_jwt_extended import (
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import User, Post, Comment, db
-from .forms import PostForm, RegistrationForm, LoginForm
+from .forms import PostForm, RegistrationForm, LoginForm, LogoutForm, CommentForm
 
 bp = Blueprint('main', __name__)
 
@@ -17,7 +17,8 @@ def inject_user():
 @bp.route('/')
 def home():
     latest_posts = Post.query.order_by(Post.date_posted.desc()).limit(5).all()
-    return render_template('index.html', latest_posts=latest_posts)
+    logout_form = LogoutForm()
+    return render_template('index.html', latest_posts=latest_posts, logout_form=logout_form)
 
 
 @bp.route('/about')
@@ -44,6 +45,25 @@ def new_post():
         flash('Post created successfully!', 'success')
         return redirect(url_for('main.user_area'))
     return render_template('new_post.html', form=form)
+
+@bp.route('/post/<int:post_id>', methods=['GET', 'POST'])
+def view_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    form = CommentForm()
+    logout_form = LogoutForm()
+    if form.validate_on_submit() and current_user.is_authenticated:
+        new_comment = Comment(
+            content=form.content.data,
+            user_id=current_user.id,
+            post_id=post_id
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+        flash('Your comment has been added!', 'success')
+        return redirect(url_for('main.view_post', post_id=post_id))
+    comments = Comment.query.filter_by(post_id=post_id).order_by(Comment.date_posted.desc()).all()
+    return render_template('view_post.html', post=post, comments=comments, form=form, logout_form=logout_form)
+
 
 @bp.route('/edit_post/<int:post_id>', methods=['GET', 'POST'])
 @login_required

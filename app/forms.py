@@ -19,3 +19,10 @@ class PostForm(FlaskForm):
     content = TextAreaField('Content', validators=[DataRequired()])
     keywords = StringField('Keywords', validators=[Length(max=100)])
     submit = SubmitField('Create Post')
+
+class CommentForm(FlaskForm):
+    content = TextAreaField('Comment', validators=[DataRequired()])
+    submit = SubmitField('Add Comment')
+
+class LogoutForm(FlaskForm):
+    pass

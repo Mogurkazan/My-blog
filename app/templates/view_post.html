@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Mi Blog{% endblock %}</title>
+    <title>{{ post.title }}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
     {% block navbar %}
@@ -41,33 +41,36 @@
     </nav>
     {% endblock %}
     <div class="container" style="margin-top: 80px;">
-        <div class="row">
-            <div class="col-md-8">
-                {% block content %}
-                <h1>Welcome to the BLOG</h1>
-                <form method="GET" action="{{ url_for('main.search') }}">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="query" placeholder="Search by keywords">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="submit">Search</button>
-                        </div>
-                    </div>
-                </form>
-                {% endblock %}
+        <h1>{{ post.title }}</h1>
+        <p>by {{ post.author.nickname }} on {{ post.date_posted.strftime('%Y-%m-%d') }}</p>
+        <p>{{ post.content }}</p>
+        <hr>
+        <h3>Comments</h3>
+        <ul class="list-group">
+            {% for comment in comments %}
+            <li class="list-group-item">
+                <strong>{{ comment.author.nickname }}</strong><br>
+                {{ comment.content }}<br>
+                <small>{{ comment.date_posted.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+            </li>
+            {% endfor %}
+            {% if not comments %}
+            <li class="list-group-item">No comments yet.</li>
+            {% endif %}
+        </ul>
+        <hr>
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.content.label(class="form-control-label") }}
+                {{ form.content(class="form-control") }}
             </div>
-            <div class="col-md-4">
-                <h2>Latest Posts</h2>
-                <ul class="list-group">
-                    {% for post in latest_posts %}
-                    <li class="list-group-item">
-                        <strong>{{ post.title }}</strong><br>
-                        by {{ post.author.nickname }}<br>
-                        {{ post.date_posted.strftime('%Y-%m-%d') }}
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
+            <button type="submit" class="btn btn-primary">Add Comment</button>
+        </form>
+        {% else %}
+        <p>You need to <a href="{{ url_for('main.login') }}">login</a> to comment.</p>
+        {% endif %}
     </div>
 </body>
 </html>
