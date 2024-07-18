@@ -39,7 +39,9 @@
         <ul class="list-group">
             {% for post in posts %}
             <li class="list-group-item">
-                <strong>{{ post.title }}</strong><br>
+                <a href="{{ url_for('main.view_post', post_id=post.id) }}">
+                    <strong>{{ post.title }}</strong>
+                </a><br>
                 {{ post.date_posted.strftime('%Y-%m-%d %H:%M:%S') }}<br>
                 Keywords: {{ post.keywords }}<br>
                 <a href="{{ url_for('main.edit_post', post_id=post.id) }}" class="btn btn-secondary btn-sm mt-2">Edit</a>

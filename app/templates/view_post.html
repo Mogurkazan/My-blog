@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ post.title }}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
@@ -43,16 +43,18 @@
         <p>by {{ post.author.nickname }} on {{ post.date_posted.strftime('%Y-%m-%d') }}</p>
         <p>{{ post.content }}</p>
         <hr>
-        <form action="{{ url_for('main.add_favorite', post_id=post.id) }}" method="POST">
-            {{ favorite_form.hidden_tag() }}
-            <button type="submit" class="btn btn-warning">
-                {% if is_favorite %}
-                Remove from Favorites
-                {% else %}
-                Add to Favorites
-                {% endif %}
-            </button>
-        </form>
+        <div id="favorite-section">
+            <form id="favorite-form" action="{{ url_for('main.' + ('remove_favorite' if is_favorite else 'add_favorite'), post_id=post.id) }}" method="POST">
+                {{ favorite_form.hidden_tag() }}
+                <button type="submit" class="btn btn-warning">
+                    {% if is_favorite %}
+                    Remove from Favorites
+                    {% else %}
+                    Add to Favorites
+                    {% endif %}
+                </button>
+            </form>
+        </div>
         <hr>
         <h3>Comments</h3>
         <ul class="list-group">
@@ -81,5 +83,26 @@
         <p>You need to <a href="{{ url_for('main.login') }}">login</a> to comment.</p>
         {% endif %}
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $(document).on('submit', '#favorite-form', function(event) {
+                event.preventDefault();
+                const form = $(this);
+                const actionUrl = form.attr('action');
+                const method = form.attr('method');
+
+                $.ajax({
+                    url: actionUrl,
+                    method: method,
+                    data: form.serialize(),
+                    success: function(response) {
+                        // Update the favorite section with the new favorite button
+                        $('#favorite-section').html(response.favorite_html);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
