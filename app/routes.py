@@ -51,8 +51,6 @@ def home():
     logout_form = LogoutForm()
     return render_template('index.html', latest_posts=latest_posts, logout_form=logout_form)
 
-############POSTS###############
-
 @bp.route('/new_post', methods=['GET', 'POST'])
 @login_required
 def new_post():
@@ -124,8 +122,6 @@ def get_comments(post_id):
 def check_favorite_status(post):
     return current_user.is_authenticated and post in current_user.favorites
 
-############FAVORITES###################################
-
 @bp.route('/add_favorite/<int:post_id>', methods=['POST'])
 @login_required
 def add_favorite(post_id):
@@ -136,7 +132,10 @@ def add_favorite(post_id):
         db.session.commit()
         flash('Post added to favorites!', 'success')
     favorite_html = render_favorite_button(post)
-    return jsonify(favorite_html=favorite_html)
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':  # Check if the request is AJAX
+        return jsonify(favorite_html=favorite_html)
+    else:
+        return redirect(url_for('main.view_post', post_id=post_id))
 
 @bp.route('/remove_favorite/<int:post_id>', methods=['POST'])
 @login_required
@@ -148,14 +147,18 @@ def remove_favorite(post_id):
         db.session.commit()
         flash('Post removed from favorites!', 'success')
     favorite_html = render_favorite_button(post)
-    return jsonify(favorite_html=favorite_html)
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':  # Check if the request is AJAX
+        return jsonify(favorite_html=favorite_html)
+    else:
+        return redirect(url_for('main.favorites'))
 
 @bp.route('/favorites')
 @login_required
 def favorites():
     favorites = Post.query.join(Favorite, (Favorite.post_id == Post.id)).filter(Favorite.user_id == current_user.id).all()
     logout_form = LogoutForm()
-    return render_template('favorites.html', favorites=favorites, logout_form=logout_form)
+    favorite_form = LogoutForm()
+    return render_template('favorites.html', favorites=favorites, logout_form=logout_form, favorite_form=favorite_form)
 
 def render_favorite_button(post):
     is_favorite = check_favorite_status(post)

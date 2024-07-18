@@ -41,6 +41,10 @@
                     <strong>{{ post.title }}</strong>
                 </a><br>
                 by {{ post.author.nickname }} on {{ post.date_posted.strftime('%Y-%m-%d') }}
+                <form action="{{ url_for('main.remove_favorite', post_id=post.id) }}" method="POST" style="display:inline;">
+                    {{ favorite_form.hidden_tag() }}
+                    <button class="btn btn-danger btn-sm" type="submit">Remove from Favorites</button>
+                </form>
             </li>
             {% endfor %}
             {% if not favorites %}
