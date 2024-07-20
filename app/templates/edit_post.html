@@ -3,16 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Post</title>
+    <title>New Post</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="{{ url_for('main.home') }}">Mi Blog</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                {% if not current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.signup') }}">Sign Up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.login') }}">Login</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.user_area') }}">Private</a>
+                </li>
+                <li class="nav-item">
+                    <form action="{{ url_for('main.logout') }}" method="POST" style="display:inline;">
+                        {{ logout_form.hidden_tag() }}
+                        <button class="nav-link btn btn-link" type="submit" style="display:inline; border:none; background:none; padding:0;">Logout</button>
+                    </form>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
     <div class="container" style="margin-top: 80px;">
-        <h1>Edit Post</h1>
-        <form method="POST" action="">
+        <h1>New Post</h1>
+        <form method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.title.label(class="form-control-label") }}
@@ -26,7 +54,11 @@
                 {{ form.keywords.label(class="form-control-label") }}
                 {{ form.keywords(class="form-control") }}
             </div>
-            <button type="submit" class="btn btn-primary">Update Post</button>
+            <div class="form-group">
+                {{ form.image.label(class="form-control-label") }}
+                {{ form.image(class="form-control-file") }}
+            </div>
+            <button type="submit" class="btn btn-primary">Create Post</button>
         </form>
     </div>
 </body>

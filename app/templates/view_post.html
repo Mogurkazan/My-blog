@@ -41,6 +41,9 @@
     <div class="container" style="margin-top: 80px;">
         <h1>{{ post.title }}</h1>
         <p>by {{ post.author.nickname }} on {{ post.date_posted.strftime('%Y-%m-%d') }}</p>
+        {% if post.image_url %}
+        <img src="{{ post.image_url }}" alt="Post Image" class="img-fluid">
+        {% endif %}
         <p>{{ post.content }}</p>
         <hr>
         <div id="favorite-section">

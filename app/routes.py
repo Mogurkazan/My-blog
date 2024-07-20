@@ -5,6 +5,7 @@ from flask_jwt_extended import (
 )
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
+import cloudinary.uploader
 from .models import User, Post, Comment, Favorite, db
 from .forms import PostForm, RegistrationForm, LoginForm, CommentForm, LogoutForm
 
@@ -56,10 +57,16 @@ def home():
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
+        image_url = None
+        if form.image.data:
+            upload_result = cloudinary.uploader.upload(form.image.data)
+            image_url = upload_result.get('url')
+        
         new_post = Post(
             title=form.title.data,
             content=form.content.data,
             keywords=form.keywords.data,
+            image_url=image_url,  # Guardar la URL de la imagen
             user_id=current_user.id
         )
         db.session.add(new_post)
@@ -82,6 +89,9 @@ def edit_post(post_id):
         post.title = form.title.data
         post.content = form.content.data
         post.keywords = form.keywords.data
+        if form.image.data:
+            upload_result = cloudinary.uploader.upload(form.image.data)
+            post.image_url = upload_result.get('url')
         db.session.commit()
         flash('Your post has been updated!', 'success')
         return redirect(url_for('main.user_area'))
