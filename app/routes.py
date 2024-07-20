@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 import cloudinary.uploader
 from .models import User, Post, Comment, Favorite, db
-from .forms import PostForm, RegistrationForm, LoginForm, CommentForm, LogoutForm
+from .forms import PostForm, RegistrationForm, LoginForm, CommentForm, LogoutForm, ProfileImageForm
 
 bp = Blueprint('main', __name__)
 
@@ -16,10 +16,17 @@ def signup():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
+        profile_image_url = None
+
+        if form.profile_image.data:
+            upload_result = cloudinary.uploader.upload(form.profile_image.data)
+            profile_image_url = upload_result.get('secure_url')
+
         new_user = User(
             email=form.email.data,
             nickname=form.nickname.data,
-            password_hash=hashed_password
+            password_hash=hashed_password,
+            profile_image=profile_image_url
         )
         db.session.add(new_user)
         db.session.commit()
@@ -129,6 +136,8 @@ def add_comment(post_id, content):
 def get_comments(post_id):
     return Comment.query.filter_by(post_id=post_id).order_by(Comment.date_posted.desc()).all()
 
+########Favorites###################
+
 def check_favorite_status(post):
     return current_user.is_authenticated and post in current_user.favorites
 
@@ -182,12 +191,24 @@ def render_favorite_button(post):
         </form>
     """, post=post, is_favorite=is_favorite, favorite_form=favorite_form)
 
-@bp.route('/user_area')
+###########Private Area#################################
+
+@bp.route('/user_area', methods=['GET', 'POST'])
 @login_required
 def user_area():
     posts = Post.query.filter_by(user_id=current_user.id).all()
     logout_form = LogoutForm()
-    return render_template('user_area.html', posts=posts, logout_form=logout_form)
+    profile_image_form = ProfileImageForm()
+
+    if profile_image_form.validate_on_submit():
+        if profile_image_form.profile_image.data:
+            upload_result = cloudinary.uploader.upload(profile_image_form.profile_image.data)
+            current_user.profile_image = upload_result.get('url')
+            db.session.commit()
+            flash('Profile image updated successfully.', 'success')
+            return redirect(url_for('main.user_area'))
+
+    return render_template('user_area.html', posts=posts, logout_form=logout_form, profile_image_form=profile_image_form)
 
 @bp.route('/search', methods=['GET'])
 def search():
