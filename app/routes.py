@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, redirect, url_for, request, jsonify, flash, render_template_string
+from flask import Blueprint, render_template, redirect, url_for, request, jsonify, flash, render_template_string, current_app
+import requests
 from flask_jwt_extended import (
     create_access_token, create_refresh_token, jwt_required, get_jwt_identity,
     set_access_cookies, set_refresh_cookies, unset_jwt_cookies
@@ -122,6 +123,38 @@ def view_post(post_id):
     comments = get_comments(post_id)
     is_favorite = check_favorite_status(post)
     return render_template('view_post.html', post=post, comments=comments, form=form, logout_form=logout_form, is_favorite=is_favorite, favorite_form=favorite_form)
+
+#########translate#############
+
+@bp.route('/translate_post_page/<int:post_id>', methods=['POST'])
+def translate_post_page(post_id):
+    language = request.form.get('language')
+    content = request.form.get('content')
+
+    if language and content:
+        api_key = current_app.config['DEEPL_API_KEY']
+        url = "https://api-free.deepl.com/v2/translate"
+        params = {
+            'auth_key': api_key,
+            'text': content,
+            'target_lang': language.upper()
+        }
+
+        response = requests.post(url, data=params)
+
+        if response.status_code == 200:
+            translated_text = response.json()['translations'][0]['text']
+            return render_template('translated_post.html', translated_text=translated_text, post_id=post_id)
+        else:
+            flash('Translation failed.', 'danger')
+            return redirect(url_for('main.view_post', post_id=post_id))
+
+    flash('Missing data for translation.', 'danger')
+    return redirect(url_for('main.view_post', post_id=post_id))
+
+
+
+#########comments##########
 
 def add_comment(post_id, content):
     new_comment = Comment(

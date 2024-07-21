@@ -49,7 +49,27 @@
         {% if post.image_url %}
         <img src="{{ post.image_url }}" alt="Post Image" class="img-fluid">
         {% endif %}
-        <p>{{ post.content }}</p>
+        
+        <!-- Translation Buttons -->
+        <div class="translation-buttons mb-3">
+            <form id="translation-form" method="POST" action="{{ url_for('main.translate_post_page', post_id=post.id) }}">
+                {{ form.hidden_tag() }}
+                <input type="hidden" name="content" value="{{ post.content }}">
+                <input type="hidden" name="language" id="language">
+                <button class="btn btn-secondary" type="button" onclick="setLanguage('es')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Spain.svg/1200px-Flag_of_Spain.svg.png" alt="ES" style="width: 24px; height: 16px;">
+                </button>
+                <button class="btn btn-secondary" type="button" onclick="setLanguage('fr')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Flag_of_France.svg/1200px-Flag_of_France.svg.png" alt="FR" style="width: 24px; height: 16px;">
+                </button>
+                <button class="btn btn-secondary" type="button" onclick="setLanguage('en')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Flag_of_the_United_Kingdom.svg/1200px-Flag_of_the_United_Kingdom.svg.png" alt="EN" style="width: 24px; height: 16px;">
+                </button>
+            </form>
+        </div>
+        
+        <p id="post-content">{{ post.content }}</p>
+        
         <hr>
         <div id="favorite-section">
             <form id="favorite-form" action="{{ url_for('main.' + ('remove_favorite' if is_favorite else 'add_favorite'), post_id=post.id) }}" method="POST">
@@ -96,6 +116,13 @@
     </div>
 
     <script>
+        function setLanguage(language) {
+            const languageInput = document.getElementById('language');
+            languageInput.value = language;
+            const form = document.getElementById('translation-form');
+            form.submit();
+        }
+
         $(document).ready(function() {
             $(document).on('submit', '#favorite-form', function(event) {
                 event.preventDefault();
@@ -108,7 +135,6 @@
                     method: method,
                     data: form.serialize(),
                     success: function(response) {
-                        // Update the favorite section with the new favorite button
                         $('#favorite-section').html(response.favorite_html);
                     }
                 });

@@ -23,6 +23,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'super-secret-key')
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'another-super-secret-key')
+    app.config['DEEPL_API_KEY'] = os.getenv('DEEPL_API_KEY')
 
     configure_extensions(app)
     configure_blueprints(app)
