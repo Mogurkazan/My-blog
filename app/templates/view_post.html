@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ post.title }}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
@@ -50,23 +47,41 @@
         <img src="{{ post.image_url }}" alt="Post Image" class="img-fluid">
         {% endif %}
         
-        <!-- Translation Buttons -->
-        <div class="translation-buttons mb-3">
-            <form id="translation-form" method="POST" action="{{ url_for('main.translate_post_page', post_id=post.id) }}">
-                {{ form.hidden_tag() }}
-                <input type="hidden" name="content" value="{{ post.content }}">
-                <input type="hidden" name="language" id="language">
-                <button class="btn btn-secondary" type="button" onclick="setLanguage('es')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Spain.svg/1200px-Flag_of_Spain.svg.png" alt="ES" style="width: 24px; height: 16px;">
-                </button>
-                <button class="btn btn-secondary" type="button" onclick="setLanguage('fr')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Flag_of_France.svg/1200px-Flag_of_France.svg.png" alt="FR" style="width: 24px; height: 16px;">
-                </button>
-                <button class="btn btn-secondary" type="button" onclick="setLanguage('en')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Flag_of_the_United_Kingdom.svg/1200px-Flag_of_the_United_Kingdom.svg.png" alt="EN" style="width: 24px; height: 16px;">
-                </button>
-            </form>
+        <!-- Translation Dropdown -->
+        <div class="dropdown mb-3">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Translate
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#" onclick="setLanguage('es')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Spain.svg/1200px-Flag_of_Spain.svg.png" alt="ES" style="width: 24px; height: 16px;"> Spanish
+                </a>
+                <a class="dropdown-item" href="#" onclick="setLanguage('fr')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Flag_of_France.svg/1200px-Flag_of_France.svg.png" alt="FR" style="width: 24px; height: 16px;"> French
+                </a>
+                <a class="dropdown-item" href="#" onclick="setLanguage('en')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Flag_of_the_United_Kingdom.svg/1200px-Flag_of_the_United_Kingdom.svg.png" alt="EN" style="width: 24px; height: 16px;"> English
+                </a>
+                <a class="dropdown-item" href="#" onclick="setLanguage('pt')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Portugal.svg/1200px-Flag_of_Portugal.svg.png" alt="PT" style="width: 24px; height: 16px;"> Portuguese
+                </a>
+                <a class="dropdown-item" href="#" onclick="setLanguage('de')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Flag_of_Germany.svg/1200px-Flag_of_Germany.svg.png" alt="DE" style="width: 24px; height: 16px;"> German
+                </a>
+                <a class="dropdown-item" href="#" onclick="setLanguage('it')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Flag_of_Italy.svg/1200px-Flag_of_Italy.svg.png" alt="IT" style="width: 24px; height: 16px;"> Italian
+                </a>
+                <a class="dropdown-item" href="#" onclick="setLanguage('zh')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Flag_of_the_People%27s_Republic_of_China.svg/1200px-Flag_of_the_People%27s_Republic_of_China.svg.png" alt="ZH" style="width: 24px; height: 16px;"> Chinese
+                </a>
+            </div>
         </div>
+        
+        <form id="translation-form" method="POST" action="{{ url_for('main.translate_post_page', post_id=post.id) }}" style="display: none;">
+            {{ form.hidden_tag() }}
+            <input type="hidden" name="content" value="{{ post.content }}">
+            <input type="hidden" name="language" id="language">
+        </form>
         
         <p id="post-content">{{ post.content }}</p>
         
@@ -114,6 +129,9 @@
         <p>You need to <a href="{{ url_for('main.login') }}">login</a> to comment.</p>
         {% endif %}
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         function setLanguage(language) {
