@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Mi Blog{% endblock %}</title>
+    <title>{% block title %}The Fireplace{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -15,9 +15,9 @@
     <nav class="menu-top navbar navbar-expand-lg fixed-top">
         <a class="top-buttons  btn navbar-brand" role="button" href="{{ url_for('main.home') }}">
             {% if current_user.is_authenticated %}
-                Blog de {{ current_user.nickname }}
+                Fireplace de {{ current_user.nickname }}
             {% else %}
-                Mi Blog
+                The Fireplace
             {% endif %}
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,12 +51,12 @@
         <div class="row">
             <div class="col-md-8">
                 {% block content %}
-                <h1>Welcome to the BLOG</h1>
+                <h1>Welcome to the Fireplace</h1>
                 <form method="GET" action="{{ url_for('main.search') }}">
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" name="query" placeholder="Search by keywords">
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="submit">Search</button>
+                            <button class="search-button btn btn-outline" type="submit">Search</button>
                         </div>
                     </div>
                 </form>
@@ -68,7 +68,7 @@
                     {% for post in latest_posts %}
                     <li class="posts-home list-group-item">
                         <a href="{{ url_for('main.view_post', post_id=post.id) }}">
-                            <strong>{{ post.title }}</strong>
+                            <strong class="posts-links">{{ post.title }}</strong>
                         </a><br>
                         by {{ post.author.nickname }}<br>
                         {{ post.date_posted.strftime('%Y-%m-%d') }}
