@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Mi Blog{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
     {% block navbar %}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <a class="navbar-brand" href="{{ url_for('main.home') }}">
+    <nav class="menu-top navbar navbar-expand-lg fixed-top">
+        <a class="top-buttons  btn navbar-brand" role="button" href="{{ url_for('main.home') }}">
             {% if current_user.is_authenticated %}
                 Blog de {{ current_user.nickname }}
             {% else %}
@@ -26,19 +27,19 @@
             <ul class="navbar-nav ml-auto">
                 {% if not current_user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('main.signup') }}">Sign Up</a>
+                    <a class="top-buttons  btn navbar-brand" role="button" href="{{ url_for('main.signup') }}">Sign Up</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('main.login') }}">Login</a>
+                    <a class="top-buttons  btn navbar-brand" role="button" href="{{ url_for('main.login') }}">Login</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('main.user_area') }}">Private</a>
+                    <a class="top-buttons  btn navbar-brand" role="button" href="{{ url_for('main.user_area') }}">Private</a>
                 </li>
                 <li class="nav-item">
-                    <form action="{{ url_for('main.logout') }}" method="POST" style="display:inline;">
+                    <form action="{{ url_for('main.logout') }}" method="POST">
                         {{ logout_form.hidden_tag() }}
-                        <button class="nav-link btn btn-link" type="submit" style="display:inline; border:none; background:none; padding:0;">Logout</button>
+                        <button class="top-buttons  btn navbar-brand" role="button" type="submit">Logout</button>
                     </form>
                 </li>
                 {% endif %}
@@ -46,7 +47,7 @@
         </div>
     </nav>
     {% endblock %}
-    <div class="container" style="margin-top: 80px;">
+    <div class="body-blog container" style="margin-top: 80px;">
         <div class="row">
             <div class="col-md-8">
                 {% block content %}
@@ -65,7 +66,7 @@
                 <h2>Latest Posts</h2>
                 <ul class="list-group">
                     {% for post in latest_posts %}
-                    <li class="list-group-item">
+                    <li class="posts-home list-group-item">
                         <a href="{{ url_for('main.view_post', post_id=post.id) }}">
                             <strong>{{ post.title }}</strong>
                         </a><br>

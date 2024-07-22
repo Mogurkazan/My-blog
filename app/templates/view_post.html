@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ post.title }}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <a class="navbar-brand" href="{{ url_for('main.home') }}">Mi Blog</a>
+    <nav class="menu-top navbar navbar-expand-lg fixed-top">
+        <a class="top-buttons  btn navbar-brand" role="button" href="{{ url_for('main.home') }}">Mi Blog</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -16,19 +17,19 @@
             <ul class="navbar-nav ml-auto">
                 {% if not current_user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('main.signup') }}">Sign Up</a>
+                    <a class="top-buttons  btn navbar-brand" role="button" href="{{ url_for('main.signup') }}">Sign Up</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('main.login') }}">Login</a>
+                    <a class="top-buttons  btn navbar-brand" role="button" href="{{ url_for('main.login') }}">Login</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('main.user_area') }}">Private</a>
+                    <a class="top-buttons  btn navbar-brand" role="button" href="{{ url_for('main.user_area') }}">Private</a>
                 </li>
                 <li class="nav-item">
-                    <form action="{{ url_for('main.logout') }}" method="POST" style="display:inline;">
+                    <form action="{{ url_for('main.logout') }}" method="POST">
                         {{ logout_form.hidden_tag() }}
-                        <button class="nav-link btn btn-link" type="submit" style="display:inline; border:none; background:none; padding:0;">Logout</button>
+                        <button class="top-buttons  btn navbar-brand" role="button" type="submit">Logout</button>
                     </form>
                 </li>
                 {% endif %}
@@ -102,7 +103,7 @@
         <h3>Comments</h3>
         <ul class="list-group">
             {% for comment in comments %}
-            <li class="list-group-item">
+            <li class="comments list-group-item">
                 {% if comment.author.profile_image %}
                 <img src="{{ comment.author.profile_image }}" alt="Profile Image" style="width:30px; height:30px; border-radius:50%;">
                 {% endif %}
