@@ -4,9 +4,9 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
+from flask_wtf.csrf import generate_csrf
 from dotenv import load_dotenv
 import os
-import cloudinary
 
 # Cargar variables de entorno desde el archivo .env
 load_dotenv()
@@ -27,7 +27,10 @@ def create_app():
 
     configure_extensions(app)
     configure_blueprints(app)
-    configure_cloudinary()
+
+    @app.context_processor
+    def inject_csrf_token():
+        return dict(csrf_token=generate_csrf())
 
     return app
 
@@ -44,13 +47,5 @@ def configure_blueprints(app):
     """Registra los blueprints de la aplicación."""
     from .routes import bp as main_bp
     app.register_blueprint(main_bp)
-
-def configure_cloudinary():
-    """Configura Cloudinary con las variables de entorno."""
-    cloudinary.config(
-        cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
-        api_key=os.getenv('CLOUDINARY_API_KEY'),
-        api_secret=os.getenv('CLOUDINARY_API_SECRET')
-    )
 
 from . import models

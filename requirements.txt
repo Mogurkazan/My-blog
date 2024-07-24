@@ -1,1 +1,10 @@
-pip freeze > requirements.txt
+Flask
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-JWT-Extended
+Flask-Login
+Flask-WTF
+gunicorn
+requests
+cloudinary
+python-dotenv
