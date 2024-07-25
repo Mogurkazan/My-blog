@@ -4,21 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>Login</h1>
-    <form method="POST" action="">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32) }}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+    <div class="login-box">
+        <h1 class="text-center">Login</h1>
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                <label for="email" class="form-label">{{ form.email.label }}</label>
+                {{ form.email(class_="form-control", id="email", aria_describedby="emailHelp", size=32) }}
+                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">{{ form.password.label }}</label>
+                {{ form.password(class_="form-control", id="password", size=32) }}
+            </div>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="button-form btn">{{ form.submit.label }}</button>
+                <a href="/" class="button-form btn">Home</a>
+            </div>
+        </form>
+    </div>
+    <!-- Incluye Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
